@@ -39,6 +39,8 @@ import * as foundryagents from "./pages/foundryagents.js";
 import * as foundrytopo from "./pages/foundrylandscape.js";
 import * as foundryspend from "./pages/foundryspend.js";
 import * as connect from "./pages/connect.js";
+import * as support from "./pages/support.js";
+import * as storage from "./pages/storage.js";
 import { syncWorkspace } from "./tenantprofile.js";
 
 // Every module above loaded: tell the boot watchdog (assets/js/boot-check.js) the app can start.
@@ -53,7 +55,8 @@ const PAGES = [
   { hidden: true, id: "person", label: "Person", icon: "users", render: person.page },
   { hidden: true, id: "personuse", label: "Person activity", icon: "users", render: personuse.page },
   { hidden: true, id: "privacy", label: "Privacy & security", icon: "shield", render: privacy.render },
-  { product: "Settings", id: "showcase", label: "Platform showcase", icon: "app", external: "assets/showcase" },
+  { product: "Settings", id: "support", label: "Updates & support", icon: "shield", render: support.render },
+  { id: "showcase", label: "Platform showcase", icon: "app", external: "assets/showcase" },
 
   { product: "Microsoft 365", section: "Monitor", id: "m365activity", label: "App activity", icon: "chart", render: m365.render },
   { section: "People", id: "m365people", label: "Usage", icon: "users", render: peoplePage("m365", "Microsoft 365 usage by person", "Who has used Teams, Exchange, SharePoint, OneDrive, Copilot and the other Microsoft 365 apps, and when. Licensed people with no activity show as No activity.", "m365-usage") },
@@ -121,6 +124,7 @@ const PAGES = [
   { id: "sources", label: "Data sources", icon: "database", render: gov.sources },
   { id: "access", label: "Users & roles", icon: "shield", render: access.render },
   { id: "workspace", label: "Workspace & rate card", icon: "env", render: workspace.render },
+  { id: "storage", label: "Storage", icon: "database", render: storage.render },
   { section: "Reference", id: "products", label: "Product catalogue", icon: "app", render: reference.products },
   { id: "transitions", label: "Licensing changes", icon: "refresh", render: reference.transitions },
   { id: "terms", label: "Contract terms", icon: "database", render: reference.terms },
@@ -165,7 +169,7 @@ const store = {
 const NEED = {
   me: "self", personuse: "self", privacy: "self", flowrepair: "builder", flowbrowser: "builder",
   m365builder: "builder", aibuilder: "builder", pbibuilder: "builder", dynbuilder: "builder", spbuilder: "builder", copilotbuilder: "builder",
-  showcase: "self", imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
+  support: "self", showcase: "self", imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
   workspace: "contracts", products: "contracts", transitions: "contracts", terms: "contracts",
 };
 const needOf = (p) => NEED[p.id] || "admin";

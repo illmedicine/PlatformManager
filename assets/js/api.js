@@ -18,6 +18,9 @@ async function staticReq(path, opts) {
   const fail = (status, msg) => { const e = new Error(msg); e.status = status; e.body = { error: msg }; throw e; };
   if ((opts.method || "GET") !== "GET") fail(405, "This is a read-only online demo. Run Platform Manager yourself to use this feature.");
   if (path in snapshot.snap) return structuredClone(snapshot.snap[path]);
+  // The demo has no Store and no data folder: show the free plan and a sample storage estimate, so the pages still read well.
+  if (path === "/api/subscription") return { tier: "free", reason: "Demo: no Microsoft Store subscription on this device.", checkedAt: null, expires: null, features: { updates: false, support: false, "feature-requests": false }, paidFeatures: ["feature-requests", "support", "updates"], version: "1.0.0", storeUrl: "" };
+  if (path === "/api/storage") return { settings: { users: 100, retentionDays: 365, sources: 6, kbPerUserSourceDay: 1.5, baseGB: 1, uploadsGB: 2, headroom: 0.3 }, estimateGB: 4.31, usedGB: 0, freeGB: 51.5, verdict: "ok", message: "The disk has enough free space for the estimate.", note: "Demo values. A planning estimate from the storage settings." };
   const known = snapshot.errors[path];
   if (known) fail(known.status, known.body?.error || "Not available in the online demo.");
   if (path.startsWith("/api/people?") || path.startsWith("/api/roster/search")) return { results: [] };
@@ -74,6 +77,11 @@ export const api = {
   rosterSearch: (q) => req("/api/roster/search?q=" + encodeURIComponent(q)),
   rosterPost: (route, body) => req(`/api/roster/${route}`, { method: "POST", body: JSON.stringify(body) }),
   privacy: () => req("/api/privacy"),
+  subscription: () => req("/api/subscription"),
+  updates: () => req("/api/updates"),
+  support: (body) => req("/api/support", { method: "POST", body: JSON.stringify(body) }),
+  featureRequest: (body) => req("/api/feature-requests", { method: "POST", body: JSON.stringify(body) }),
+  storage: () => req("/api/storage"),
   groupSearch: (q) => req("/api/groups/search?q=" + encodeURIComponent(q)),
   groupDetail: (id, nested) => req("/api/groups/detail?id=" + encodeURIComponent(id) + (nested ? "&nested=1" : "")),
   groupInsights: (ids) => req("/api/groups/insights", { method: "POST", body: JSON.stringify({ ids }) }),
