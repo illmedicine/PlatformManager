@@ -40,7 +40,7 @@ import * as foundrytopo from "./pages/foundrylandscape.js";
 import * as foundryspend from "./pages/foundryspend.js";
 import * as connect from "./pages/connect.js";
 import * as support from "./pages/support.js";
-import * as storage from "./pages/storage.js";
+import * as fabricflow from "./pages/fabricflow.js";
 import { syncWorkspace } from "./tenantprofile.js";
 
 // Every module above loaded: tell the boot watchdog (assets/js/boot-check.js) the app can start.
@@ -88,6 +88,7 @@ const PAGES = [
   { section: "People", id: "pbipeople", label: "Usage", icon: "users", render: peoplePage("powerbi", "Power BI usage by person", "Who has used Power BI and when, from the Power BI activity log.", "powerbi-usage") },
   { section: "Optimize", id: "fabric", label: "Fabric planner", icon: "chart", render: fabric.render },
   { section: "Optimize", id: "fabrictopology", label: "Migration topology", icon: "env", render: fabrictopology.render },
+  { id: "fabricflow", label: "Workflows", icon: "flow", render: fabricflow.render },
   { section: "Build", id: "pbibuilder", label: "AI Builder", agent: "Power BI & Fabric", icon: "flow", render: assistant.page("powerbi") },
   { id: "pbirecipes", label: "CLI recipes", icon: "terminal", render: builder.page("powerbi") },
 
@@ -124,7 +125,6 @@ const PAGES = [
   { id: "sources", label: "Data sources", icon: "database", render: gov.sources },
   { id: "access", label: "Users & roles", icon: "shield", render: access.render },
   { id: "workspace", label: "Workspace & rate card", icon: "env", render: workspace.render },
-  { id: "storage", label: "Storage", icon: "database", render: storage.render },
   { section: "Reference", id: "products", label: "Product catalogue", icon: "app", render: reference.products },
   { id: "transitions", label: "Licensing changes", icon: "refresh", render: reference.transitions },
   { id: "terms", label: "Contract terms", icon: "database", render: reference.terms },
@@ -169,7 +169,7 @@ const store = {
 const NEED = {
   me: "self", personuse: "self", privacy: "self", flowrepair: "builder", flowbrowser: "builder",
   m365builder: "builder", aibuilder: "builder", pbibuilder: "builder", dynbuilder: "builder", spbuilder: "builder", copilotbuilder: "builder",
-  support: "self", showcase: "self", imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
+  support: "self", fabricflow: "self", showcase: "self", imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
   workspace: "contracts", products: "contracts", transitions: "contracts", terms: "contracts",
 };
 const needOf = (p) => NEED[p.id] || "admin";

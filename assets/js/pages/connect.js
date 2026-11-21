@@ -1,4 +1,4 @@
-import { h, icon, pill, copyText, download } from "../dom.js";
+import { h, icon, pill, copyText, download, fmt } from "../dom.js";
 import { api } from "../api.js";
 import { pageHead } from "./common.js";
 
@@ -128,6 +128,7 @@ export async function render(ctx) {
       h("h4", { text: "Data sources to switch on" }), toggles, h("div", { class: "toolbar" }, h("button", { class: "btn primary", type: "button", onclick: build }, "Build the configuration"))), out));
 
   // ---- verify
+  root.append(requirementsSection(g));
   const rows = g.sources.filter((s) => s.module);
   root.append(h("div", { class: "section" }, h("h2", { text: "5. Check it works" }),
     h("div", { class: "card" }, h("ol", { class: "cs-ul" }, h("li", { text: "Start the server and open it. Sign in." }), h("li", { text: "Open Reference and setup, Data sources, and press Sync all (or wait for the daily 01:00 sync)." }),
@@ -154,4 +155,67 @@ function permCheck(demo) {
   } }, icon("check"), "Check permissions");
   return h("div", { class: "card", style: { marginTop: "12px" } }, h("h3", { text: "Check the permissions now" }),
     h("p", { class: "muted", text: "Needs the server running with your configuration and secret. It only asks Microsoft which permissions the app registration holds, then compares them with what the switched-on sources need." }), h("div", { class: "toolbar" }, btn), out);
+}
+
+// ---- Requirements, data sources and storage: one place to size the install before anything is connected.
+// The storage formula is the same as tools/ppm_storage.py (estimate_gb); keep the two in step.
+const STORAGE_FIELDS = [
+  ["users", "People in the tenant", 10, 20000, 10, ""],
+  ["retentionDays", "Days of daily sweeps kept", 30, 1825, 5, "days"],
+  ["sources", "Data sources switched on", 0, 12, 1, ""],
+  ["kbPerUserSourceDay", "Usage rows kept per person, per source, per day", 0.5, 5, 0.1, "KB"],
+  ["uploadsGB", "Uploaded workbooks and documents", 0, 100, 1, "GB"],
+  ["baseGB", "Application, logs and audit trail", 0.5, 10, 0.5, "GB"],
+  ["headroom", "Spare space for growth and sync runs", 0, 0.6, 0.05, "of the estimate"],
+];
+const GIB = 1024 ** 3;
+export function estimateGB(s) {
+  const rowsGB = s.users * s.sources * s.retentionDays * s.kbPerUserSourceDay * 1024 / GIB;
+  return Math.round((rowsGB + s.uploadsGB + s.baseGB) * (1 + s.headroom) * 100) / 100;
+}
+
+const REQUIREMENTS = [
+  ["Windows", "Windows 10 version 1809 or later, or Windows 11, 64-bit. Windows Server with the same sideload rules for a server install. [VERIFY] server SKUs."],
+  ["Memory", "4 GB minimum; 8 GB recommended for large tenants. [VERIFY] against a real tenant."],
+  ["Disk", "About 300 MB for the application, plus the storage estimate below for the data folder."],
+  ["Account", "Standard user installs are per user and need no administrator rights. Machine-wide installs need an administrator. The Microsoft Store edition needs a Microsoft account signed in to the Store for the subscription."],
+  ["Network", "Outbound HTTPS only, to Microsoft sign-in and the Microsoft 365, Power Platform, Power BI, Dynamics 365 and Azure endpoints the switched-on sources call. Nothing listens on the network: the server binds to 127.0.0.1 by default. [VERIFY] the endpoint list."],
+  ["Microsoft permissions", "Read-only application permissions for each switched-on source (see the table of data sources). Platform Manager never writes to Microsoft 365, except the approved actions in the Action Center."],
+];
+
+function requirementsSection(g) {
+  const cfg = { users: 100, retentionDays: 365, sources: 6, kbPerUserSourceDay: 1.5, uploadsGB: 2, baseGB: 1, headroom: 0.3 };
+  const out = h("div", { class: "card" });
+  const estimate = h("div", { style: { font: "600 28px var(--font-display)" } });
+  const snippet = h("pre", { class: "defpre" });
+  const paint = () => {
+    estimate.textContent = `${fmt.n(estimateGB(cfg))} GB`;
+    snippet.textContent = JSON.stringify({ storage: { ...cfg } }, null, 2);
+  };
+  const rowsOf = STORAGE_FIELDS.map(([k, label, min, max, step, unit]) => {
+    const value = h("span", { class: "muted", text: "" });
+    const input = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(cfg[k]), "aria-label": label, style: { width: "100%" } });
+    const show = () => { value.textContent = `${k === "headroom" ? Math.round(cfg[k] * 100) + "%" : fmt.n(cfg[k])}${unit && k !== "headroom" ? " " + unit : ""}`; };
+    input.addEventListener("input", () => { cfg[k] = Number(input.value); show(); paint(); });
+    show();
+    return h("label", { class: "fld", style: { display: "grid", gap: "4px" } }, h("span", {}, label, " ", value), input);
+  });
+  const sliders = h("div", { class: "grid", style: { gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" } }, rowsOf);
+  paint();
+  // What the server has now, for the same folder (administrators only; the page is for them).
+  const now = h("p", { class: "muted", text: "" });
+  api.storage().then((st) => { now.textContent = `On this server now: ${fmt.n(st.usedGB)} GB used, ${fmt.n(st.freeGB)} GB free on the data disk.`; }).catch(() => { now.textContent = ""; });
+  out.append(h("div", { class: "grid", style: { gridTemplateColumns: "1fr 1fr", gap: "18px" } },
+    h("div", {}, h("h4", { text: "Storage estimate" }), estimate, h("p", { class: "muted", text: "Move the sliders to match the environment. The estimate is a planning model; compare it with the measured use after a month." }), now),
+    h("div", {}, h("h4", { text: "Configuration block" }), h("p", { class: "muted", text: "Paste this into config/powerplatform.json to keep the figures." }), copyBtn(() => snippet.textContent, "Copy"), snippet)),
+    h("h4", { text: "Adjust for this environment" }), sliders);
+  const reqs = h("table", { class: "ftable" }, h("thead", {}, h("tr", {}, [h("th", { text: "Requirement" }), h("th", { text: "What you need" })])),
+    h("tbody", {}, REQUIREMENTS.map(([k, v]) => h("tr", {}, h("td", { text: k }), h("td", { text: v })))));
+  const sources = h("table", { class: "ftable" }, h("thead", {}, h("tr", {}, ["Data source", "Switched on", "What it reads"].map((c) => h("th", { text: c })))),
+    h("tbody", {}, (g.sources || []).filter((x) => x.module).map((x) => h("tr", {}, h("td", { text: x.label || x.name || x.module }), h("td", { text: x.status?.enabled || x.required ? "Yes" : "No" }), h("td", { text: x.purpose || x.about || "" })))));
+  return h("div", { class: "section" }, h("h2", { text: "Requirements, data sources and storage" }),
+    h("p", { class: "muted", text: "Everything this installation needs for full functionality, and how much storage the environment will use." }),
+    h("div", { class: "card" }, h("h4", { text: "System requirements" }), reqs),
+    h("div", { class: "card" }, h("h4", { text: "Data sources" }), sources),
+    out);
 }
