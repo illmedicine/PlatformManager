@@ -31,6 +31,18 @@ export async function render() {
       s.table ? (s.table.rows.length ? table(s.table.cols, s.table.rows.map((r) => h("tr", {}, r.map((c) => h("td", { text: c }))))) : h("div", { class: "empty", text: "No data sources are switched on." })) : null)));
   }
 
+  // Photographs on the platform showcase (assets/showcase.html). Each one is licensed for reuse; the source and licence are kept here, not on the slides.
+  const PHOTOS = [
+    ["The core", "Manhattan skyline, 2012", "Wikimedia Commons", "CC BY-SA 4.0"],
+    ["AI agents", "Group at a conference-room meeting, WikiCamp Morocco 2026, day 3", "Wikimedia Commons", "CC BY-SA 4.0"],
+    ["Fabric", "Data centre roof", "Wikimedia Commons", "CC0 (public domain)"],
+    ["Contracts", "Glass office building", "rawpixel", "CC0 1.0 (public domain)"],
+    ["Builders", "Data centre interior, by Gwan Kho", "Flickr", "CC BY-SA 2.0"],
+    ["Start", "Office skyline, by nickgraywfu", "Flickr", "CC BY-SA 2.0"],
+  ];
+  root.append(card("Image credits (showcase)", h("p", { class: "muted", text: "The photographs used on the platform showcase, with their sources and licences." }),
+    table(["Chapter", "Photograph", "Source", "Licence"], PHOTOS.map((r) => h("tr", {}, r.map((c) => h("td", { text: c })))))));
+
   root.append(h("div", { class: "section" }, h("h2", { text: "Where we are not as strong as we should be" }),
     h("p", { class: "muted", text: "Because this application signs people in with their Windows account rather than single sign-on with Entra, these are the limits that follow, and the controls that make up for them. A line disappears when the setting behind it is fixed." }),
     h("div", { class: "card" }, p.gaps.length ? table(["Gap", "What it means", "Compensating controls and the fix"], p.gaps.map((g) => h("tr", {}, h("td", {}, h("b", { text: g[0] })), h("td", { text: g[1] }), h("td", { text: g[2] }))))

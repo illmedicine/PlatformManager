@@ -97,7 +97,7 @@ export async function render(ctx) {
   const sel = (opts) => { const s = h("select", { class: "select" }, opts.map(([v, t]) => h("option", { value: v, text: t }))); return s; };
   const ssoSel = sel([["entra", "Microsoft Entra sign-in"], ["windows", "Windows sign-in"], ["none", "No sign-in yet (localhost only)"]]);
   const admins = h("input", { class: "input", placeholder: "admin1@yourcompany.com, admin2@yourcompany.com", "aria-label": "Administrators" });
-  const contracts = h("input", { class: "input", placeholder: "optional: people who may use the renewal and contracts area", "aria-label": "Contracts role" });
+  const contracts = h("input", { class: "input", placeholder: "optional: people who may use the renewal and contracts area", "aria-label": "Contract Admin role" });
   const domains = h("input", { class: "input", placeholder: "optional: yourcompany.com (who may be given a role)", "aria-label": "Mail domains" });
   const everyone = h("input", { type: "checkbox" }), hosted = h("input", { type: "checkbox" }), delegated = h("input", { type: "checkbox" });
   const mods = g.sources.filter((s) => s.module).map((s) => { const c = h("input", { type: "checkbox", value: s.module, ...(s.required || s.status?.enabled ? { checked: "" } : {}) }); return { c, el: h("label", { class: "fld check" }, c, h("span", { text: s.name }), h("small", { text: s.api })) }; });
@@ -121,7 +121,7 @@ export async function render(ctx) {
   const toggles = h("div", { class: "cs-toggles" }, ...mods.map((m) => m.el));
   root.append(h("div", { class: "section" }, h("h2", { text: "4. Build your configuration" }),
     h("p", { class: "muted", text: "Answer a few questions and get a configuration file to save. It contains no secret and is not written anywhere by this page." }),
-    h("div", { class: "card" }, h("div", { class: "fwhat-row" }, field("Sign-in", ssoSel), field("Administrators", admins, "Addresses, separated by commas"), field("Contracts role (optional)", contracts), field("Mail domains (optional)", domains)),
+    h("div", { class: "card" }, h("div", { class: "fwhat-row" }, field("Sign-in", ssoSel), field("Administrators", admins, "Addresses, separated by commas"), field("Contract Admin role (optional)", contracts), field("Mail domains (optional)", domains)),
       h("div", { class: "fwhat-row" }, h("label", { class: "fld check" }, everyone, h("span", { text: "Let everyone in my tenant sign in as a basic User" }), h("small", { text: "Off: only the people listed above can sign in" })),
         h("label", { class: "fld check" }, hosted, h("span", { text: "The site is hosted behind a cloud proxy" }), h("small", { text: "Needs Microsoft Entra sign-in" })),
         h("label", { class: "fld check" }, delegated, h("span", { text: "Connect as me (delegated) instead of with a client secret" }), h("small", { text: "For limited administrators who cannot get app permissions: you sign in on the Data sources page" }))),

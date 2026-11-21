@@ -52,7 +52,8 @@ const PAGES = [
   { top: true, id: "me", label: "My overview", icon: "users", render: mine.render },
   { hidden: true, id: "person", label: "Person", icon: "users", render: person.page },
   { hidden: true, id: "personuse", label: "Person activity", icon: "users", render: personuse.page },
-  { hidden: true, id: "privacy", label: "Privacy & security", icon: "shield", render: privacy.render },
+  { product: "Settings", id: "privacy", label: "Privacy & security", icon: "shield", render: privacy.render },
+  { id: "showcase", label: "Platform showcase", icon: "app", external: "assets/showcase.html" },
 
   { product: "Microsoft 365", section: "Monitor", id: "m365activity", label: "App activity", icon: "chart", render: m365.render },
   { section: "People", id: "m365people", label: "Usage", icon: "users", render: peoplePage("m365", "Microsoft 365 usage by person", "Who has used Teams, Exchange, SharePoint, OneDrive, Copilot and the other Microsoft 365 apps, and when. Licensed people with no activity show as No activity.", "m365-usage") },
@@ -164,7 +165,7 @@ const store = {
 const NEED = {
   me: "self", personuse: "self", privacy: "self", flowrepair: "builder", flowbrowser: "builder",
   m365builder: "builder", aibuilder: "builder", pbibuilder: "builder", dynbuilder: "builder", spbuilder: "builder", copilotbuilder: "builder",
-  imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
+  showcase: "self", imports: "contracts", triage: "contracts", search: "contracts", renewalposition: "contracts", contracts: "contracts", advisor: "contracts", contractagent: "contracts",
   workspace: "contracts", products: "contracts", transitions: "contracts", terms: "contracts",
 };
 const needOf = (p) => NEED[p.id] || "admin";
@@ -184,7 +185,7 @@ async function loadMe() {
   try {
     return await api.me();
   } catch (e) {
-    if (e.status === 404) return { role: "admin", roleLabel: "Admin", caps: ["self", "builder", "contracts", "admin"], upn: "", name: "", sso: false, mode: null };
+    if (e.status === 404) return { role: "admin", roleLabel: "Platform Global Admin", caps: ["self", "builder", "contracts", "admin"], upn: "", name: "", sso: false, mode: null };
     throw e;
   }
 }
@@ -204,17 +205,15 @@ const LANDING = isAdmin ? "overview" : "me";
 if (!isAdmin) ctx.status = { mode: me.mode, modules: [], pulls: {}, syncing: false, tenant: {}, manualSync: false };
 
 // Products (collapsible menus) with their labelled sections, in order. Standalone pages are kept apart.
-// People who are not administrators get one "AI Builder" menu holding the agents, instead of a Build section inside every product.
+// Everyone sees the same product menus; a person only gets the pages their role allows (the AI Builder agents under each product for General Users).
 const TOP = PAGES.filter((p) => p.top && mayOpen(p));
 const GROUPS = [];
 for (const p of PAGES.filter((x) => !x.top && !x.hidden && mayOpen(x))) {
-  const flat = !isAdmin && needOf(p) === "builder";
-  const gname = flat ? "AI Builder" : p.grp, sname = flat ? "" : p.sec;
-  let g = GROUPS.find((x) => x.name === gname);
-  if (!g) GROUPS.push(g = { name: gname, sections: [] });
-  let s = g.sections.find((x) => x.name === sname);
-  if (!s) g.sections.push(s = { name: sname, pages: [] });
-  s.pages.push(flat ? { ...p, label: p.agent || p.label } : p);
+  let g = GROUPS.find((x) => x.name === p.grp);
+  if (!g) GROUPS.push(g = { name: p.grp, sections: [] });
+  let s = g.sections.find((x) => x.name === p.sec);
+  if (!s) g.sections.push(s = { name: p.sec, pages: [] });
+  s.pages.push(p);
 }
 const groupOf = (id) => GROUPS.find((g) => g.sections.some((s) => s.pages.some((p) => p.id === id)))?.name;
 const PRODUCT_USAGE_PAGE = { powerplatform: "usage", powerbi: "pbipeople", dynamics: "dynamics", sharepoint: "sppeople", copilot: "copilotpeople", m365: "m365people" };
@@ -262,7 +261,7 @@ function closeFlyout() {
 
 function buildNav(findings = 0) {
   const focusKey = document.activeElement?.dataset?.navKey;
-  const link = (p) => h("a", { href: "#" + p.id, "aria-current": p.id === current ? "page" : null, onclick: closeFlyout }, icon(p.icon), p.label,
+  const link = (p) => h("a", p.external ? { href: p.external, target: "_blank", rel: "noopener", onclick: closeFlyout } : { href: "#" + p.id, "aria-current": p.id === current ? "page" : null, onclick: closeFlyout }, icon(p.icon), p.label,
     p.badge && findings ? h("span", { class: "badge", text: findings }) : null);
   const pinLabel = pinned ? "Unpin navigation (use the full width)" : "Pin navigation open";
   nav.replaceChildren(
@@ -284,7 +283,7 @@ function buildNav(findings = 0) {
 
 async function show() {
   const id = (location.hash.slice(1) || LANDING).split("/")[0];
-  const found = PAGES.find((p) => p.id === id);
+  const found = PAGES.find((p) => p.id === id && !p.external);
   const refused = found && !mayOpen(found);
   const page = found && !refused ? found : PAGES.find((p) => p.id === LANDING);
   // A person's product view sits under that product's own Usage page in the navigation; without that page it sits under the profile.

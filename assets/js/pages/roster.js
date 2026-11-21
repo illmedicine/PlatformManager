@@ -2,7 +2,7 @@ import { h, icon, fmt, pill } from "../dom.js";
 import { api } from "../api.js";
 
 const TONE = { admin: "risk", contracts: "warn", user: "info" };
-const LABEL = { user: "User", contracts: "Contracts user", admin: "Admin" };
+const LABEL = { user: "General User", contracts: "Contract Admin", admin: "Platform Global Admin" };
 const CHANGE = { "role-added": ["Added", "ok"], "role-removed": ["Removed", "warn"], "role-change-refused": ["Refused", "risk"], blocked: ["Address blocked", "risk"], unblocked: ["Unblocked", "ok"] };
 const SOURCE = { config: "Named in the configuration file", added: "Added on this page", domain: "Account-domain rule" };
 
@@ -15,7 +15,7 @@ export async function rosterSection(recent, reload) {
   const note = h("div", {});
   const fail = (e) => note.replaceChildren(h("div", { class: "banner error" }, icon("alert"), e.message));
 
-  sec.append(h("p", { class: "muted", text: `Everyone who signs in and is on no list gets ${view.defaultRole ? `the ${LABEL[view.defaultRole]} role` : "no access"}. You can add people to any role below. You can remove people you added to User or Contracts user, but never an administrator: removing one means changing the configuration file on the server. Every change is recorded in the audit trail.` }), note);
+  sec.append(h("p", { class: "muted", text: `Everyone who signs in and is on no list gets ${view.defaultRole ? `the ${LABEL[view.defaultRole]} role` : "no access"}. You can add people to any role below. You can remove people you added to General User or Contract Admin, but never a Platform Global Admin: removing one means changing the configuration file on the server. Every change is recorded in the audit trail.` }), note);
 
   const cards = h("div", { class: "grid g-3" }, view.roles.map((r) => {
     const rows = r.members.map((m) => {
