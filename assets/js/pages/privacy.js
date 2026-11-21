@@ -31,7 +31,7 @@ export async function render() {
       s.table ? (s.table.rows.length ? table(s.table.cols, s.table.rows.map((r) => h("tr", {}, r.map((c) => h("td", { text: c }))))) : h("div", { class: "empty", text: "No data sources are switched on." })) : null)));
   }
 
-  // Photographs on the platform showcase (assets/showcase.html). Each one is licensed for reuse; the source and licence are kept here, not on the slides.
+  // Photographs on the platform showcase (assets/showcase). Each one is licensed for reuse; the source and licence are kept here, not on the slides.
   const PHOTOS = [
     ["The core", "Manhattan skyline, 2012", "Wikimedia Commons", "CC BY-SA 4.0"],
     ["AI agents", "Group at a conference-room meeting, WikiCamp Morocco 2026, day 3", "Wikimedia Commons", "CC BY-SA 4.0"],
