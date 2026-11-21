@@ -1,18 +1,29 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>C3</title>
-    <style>html,body,#root{height:100%;margin:0;overflow:hidden}</style>
-    <link rel="icon" type="image/svg+xml" href="./eaip-logo.svg" />
-    <meta name="theme-color" content="#4a2284" />
-    <script type="module" crossorigin src="./assets/main-C1pZRd8N.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-P2Xu9kJm.js">
-    <link rel="stylesheet" crossorigin href="./assets/main-D5Pa1UQq.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Platform Manager</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script>window.PPM_STATIC="assets/data/snapshot.json";</script>
+  <script src="assets/js/boot-check.js"></script>
+</head>
+<body>
+  <div style="background:#fff4ce;color:#4a3b00;padding:6px 12px;font:13px Segoe UI,sans-serif;text-align:center">Read-only online demo with synthetic data. Nothing here is real, and actions that change anything are switched off.</div>
+  <header class="titlebar">
+    <button class="btn menubtn" id="menubtn" type="button" aria-controls="nav" aria-expanded="false" aria-label="Show navigation" title="Show navigation"></button>
+    <div class="brand"><img src="assets/img/favicon.svg" alt=""><span>Platform Manager</span></div>
+    <div class="spacer"></div>
+    <div class="livechip" id="livechip" role="status"><span class="dot"></span><span id="livetext">Connecting...</span></div>
+    <button class="btn" id="syncbtn" type="button" title="Refresh all data sources now"></button>
+    <div class="userchip" id="userchip" hidden></div>
+    <button class="btn" id="soundbtn" type="button" aria-label="Button sounds" aria-pressed="true"></button>
+    <button class="btn" id="themebtn" type="button" aria-label="Toggle theme"></button>
+  </header>
+  <nav class="nav" id="nav" aria-label="Sections"></nav>
+  <main class="main" id="main"><div class="loading">Loading...</div></main>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
 </html>
-
