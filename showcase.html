@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Platform Manager: The Showcase</title>
+<meta name="description" content="Platform Manager connects your Microsoft data sources, puts governed AI agents in every user's hands, and gets smarter with every question.">
+<style>
+:root{
+  --ink:#0b0b0d; --paper:#f4f1ea; --muted:#9a968c; --line:rgba(244,241,234,.18);
+  --a:#ff3d2e; --b:#18d6c4; --c:#f2c14e; --d:#7b6cff; --e:#ff7ab6;
+  --serif:"Didot","Bodoni MT","Playfair Display","Times New Roman",serif;
+  --sans:"Helvetica Neue","Segoe UI",Arial,sans-serif;
+  --pad:clamp(20px,5vw,120px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth;background:var(--ink)}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+/* masthead */
+.mast{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:20px var(--pad);mix-blend-mode:difference;color:#fff;pointer-events:none}
+.mast>*{pointer-events:auto}
+.logo{font:700 clamp(14px,1.1vw,22px)/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;text-decoration:none;color:inherit}
+.mast a.cta{font:600 clamp(11px,.8vw,16px)/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:inherit;border-bottom:2px solid currentColor;padding-bottom:6px}
+
+/* dots */
+.dots{position:fixed;right:clamp(12px,2vw,40px);top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:14px;mix-blend-mode:difference}
+.dots a{display:block;width:10px;height:10px;border:1.5px solid #fff;border-radius:50%;transition:.3s}
+.dots a.on{background:#fff;transform:scale(1.5)}
+.counter{position:fixed;left:var(--pad);bottom:24px;z-index:20;mix-blend-mode:difference;color:#fff;font:600 clamp(11px,.8vw,16px)/1 var(--sans);letter-spacing:.25em}
+
+/* slides */
+.slide{position:relative;min-height:100vh;min-height:100svh;scroll-snap-align:start;display:flex;align-items:flex-end;padding:clamp(90px,12vh,200px) var(--pad) clamp(70px,10vh,160px);overflow:hidden;isolation:isolate}
+.art{position:absolute;inset:0;z-index:-1}
+.art svg{width:100%;height:100%;display:block}
+.wrap{width:100%;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(24px,5vw,140px);align-items:end}
+.kicker{font:700 clamp(11px,.85vw,18px)/1 var(--sans);letter-spacing:.4em;text-transform:uppercase;margin-bottom:clamp(14px,2vh,32px);display:flex;align-items:center;gap:16px}
+.kicker::before{content:"";width:clamp(32px,4vw,90px);height:2px;background:currentColor}
+h1,h2{font-family:var(--serif);font-weight:800;line-height:.9;letter-spacing:-.03em;font-size:clamp(46px,9.6vw,260px);text-transform:uppercase}
+h1 em,h2 em{font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.02em}
+.lede{font:400 clamp(16px,1.35vw,30px)/1.5 var(--sans);max-width:34em;margin-top:clamp(18px,3vh,48px);opacity:.92}
+.side{border-left:1px solid var(--line);padding-left:clamp(16px,2vw,48px)}
+.side h3{font:700 clamp(11px,.8vw,16px)/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;margin-bottom:18px;color:var(--accent)}
+.side ul{list-style:none;display:grid;gap:clamp(10px,1.6vh,22px)}
+.side li{font:400 clamp(14px,1.05vw,24px)/1.4 var(--sans);padding-bottom:clamp(10px,1.6vh,22px);border-bottom:1px solid var(--line)}
+.side li b{font-weight:700;color:var(--paper)}
+.big{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2vw,46px);line-height:1.2;margin-bottom:clamp(14px,2vh,28px)}
+.tag{display:inline-block;margin:clamp(18px,3vh,40px) 10px 0 0;padding:.7em 1.1em;border:1px solid var(--line);font:600 clamp(10px,.75vw,15px)/1 var(--sans);letter-spacing:.22em;text-transform:uppercase}
+
+/* per-slide themes */
+.s1{--accent:var(--a);background:#0b0b0d}
+.s2{--accent:var(--d);background:#0d0b1a}
+.s3{--accent:var(--b);background:#04141a}
+.s4{--accent:var(--c);background:#17120a}
+.s5{--accent:var(--e);background:#17080f}
+.s6{--accent:var(--a);background:#0b0b0d;align-items:center;text-align:center}
+.s6 .wrap{grid-template-columns:1fr;justify-items:center}
+.btn{display:inline-block;margin-top:clamp(24px,4vh,56px);padding:1.2em 2.4em;background:var(--paper);color:var(--ink);font:700 clamp(12px,.9vw,18px)/1 var(--sans);letter-spacing:.25em;text-transform:uppercase;text-decoration:none}
+.btn:hover{background:var(--a);color:#fff}
+.s6 .lede{margin-inline:auto}
+
+/* motion: slow drift on the art, reveal on entry */
+.art .drift{animation:drift 26s ease-in-out infinite alternate;transform-origin:center}
+@keyframes drift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.07) translate3d(-1.5%,1%,0)}}
+.slide .wrap>*{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s ease}
+.slide.in .wrap>*{opacity:1;transform:none}
+.slide.in .wrap>*:nth-child(2){transition-delay:.18s}
+.noscript .wrap>*{opacity:1;transform:none}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .side{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}
+  .slide{align-items:flex-start;padding-top:96px}
+  .dots{display:none}
+  h1,h2{font-size:clamp(40px,13vw,90px)}
+}
+</style>
+</head>
+<body>
+<header class="mast">
+  <a class="logo" href="#core">Platform Manager</a>
+  <a class="cta" href="#start">See it live</a>
+</header>
+<nav class="dots" aria-label="Chapters">
+  <a href="#core" aria-label="The core"></a><a href="#agents" aria-label="AI agents"></a><a href="#fabric" aria-label="Fabric"></a><a href="#contracts" aria-label="Contracts"></a><a href="#builders" aria-label="Builders"></a><a href="#start" aria-label="Start"></a>
+</nav>
+<div class="counter" id="counter">01 / 06</div>
+
+<!-- 1 · THE CORE -->
+<section class="slide s1" id="core" aria-labelledby="t1">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <radialGradient id="g1" cx="70%" cy="35%" r="70%"><stop offset="0" stop-color="#ff3d2e" stop-opacity=".55"/><stop offset=".5" stop-color="#7a1810" stop-opacity=".25"/><stop offset="1" stop-color="#0b0b0d" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1600" height="900" fill="url(#g1)"/>
+    <g class="drift" fill="none" stroke="#f4f1ea" stroke-opacity=".28" stroke-width="1.2">
+      <circle cx="1120" cy="330" r="60"/><circle cx="1120" cy="330" r="150"/><circle cx="1120" cy="330" r="260"/><circle cx="1120" cy="330" r="390"/>
+      <path d="M1120 330 L760 140 M1120 330 L1480 120 M1120 330 L1500 560 M1120 330 L820 640 M1120 330 L1180 780"/>
+      <g fill="#f4f1ea" stroke="none"><circle cx="760" cy="140" r="9"/><circle cx="1480" cy="120" r="9"/><circle cx="1500" cy="560" r="9"/><circle cx="820" cy="640" r="9"/><circle cx="1180" cy="780" r="9"/></g>
+      <circle cx="1120" cy="330" r="22" fill="#ff3d2e" stroke="none"/>
+    </g></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker">01 · The core</div>
+      <h1 id="t1">One view of <em>every</em> Microsoft tenant</h1>
+      <p class="lede">Platform Manager connects the API sources behind Microsoft 365 and the Power Platform, sweeps them on a schedule, and reads deeply when you ask. Administrators get on-the-spot answers about usage, licences, workflows and spend, from data they can trust to be current.</p>
+      <span class="tag">One tenant or many</span><span class="tag">24-hour sweeps, or tighter</span><span class="tag">Read-only by design</span>
+    </div>
+    <aside class="side">
+      <h3>Who it is for</h3>
+      <ul>
+        <li><b>Microsoft 365 administrators</b> who need the answer now, not after a report request.</li>
+        <li><b>Platform and network teams</b> watching capacity, adoption and risk.</li>
+        <li><b>Business operators</b> who want to see what the organisation really uses, and what it pays for.</li>
+        <li><b>Managed-service teams</b> running several tenants from one setup, each kept separate.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 2 · AGENTS -->
+<section class="slide s2" id="agents" aria-labelledby="t2">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b6cff" stop-opacity=".55"/><stop offset="1" stop-color="#0d0b1a" stop-opacity="0"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#g2)"/>
+    <g class="drift" fill="none" stroke="#c9c2ff" stroke-opacity=".35" stroke-width="1.2">
+      <path d="M900 700 C1050 520 1150 760 1300 520 S1500 380 1600 300"/><path d="M820 780 C980 600 1100 840 1260 600 S1480 470 1600 390"/><path d="M740 860 C910 690 1040 900 1220 690 S1460 560 1600 480"/>
+      <g fill="#c9c2ff" stroke="none"><circle cx="1300" cy="520" r="10"/><circle cx="1050" cy="590" r="7"/><circle cx="1460" cy="400" r="12"/></g>
+      <rect x="1040" y="130" width="360" height="190" rx="6"/><path d="M1040 180h360M1090 230h180M1090 270h120"/>
+    </g></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker">02 · AI agents &amp; builders</div>
+      <h2 id="t2">Copilot, <em>but it does the work</em></h2>
+      <p class="lede">Agents tuned to your environment and to each Microsoft product (SharePoint, Power Platform, Power BI, Dynamics, Copilot) work on a person's behalf instead of only advising. Every agent is managed in one place, in the Azure AI Foundry hub, so the organisation gets more capability and spends less on language models.</p>
+      <span class="tag">Foundry hub</span><span class="tag">Role-based access</span><span class="tag">Policy &amp; governance</span>
+    </div>
+    <aside class="side">
+      <p class="big">Smarter agents, one control point.</p>
+      <ul>
+        <li><b>Right model, right task.</b> Route work to the model that fits, and watch the spend by agent.</li>
+        <li><b>Governed by default.</b> RBAC and policy decide who can use which agent and what it may touch.</li>
+        <li><b>Learns your estate.</b> What the platform stores makes every later answer sharper.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 3 · FABRIC -->
+<section class="slide s3" id="fabric" aria-labelledby="t3">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <linearGradient id="g3" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#18d6c4" stop-opacity=".5"/><stop offset="1" stop-color="#04141a" stop-opacity="0"/></linearGradient>
+    <pattern id="p3" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#18d6c4" stroke-opacity=".2"/></pattern></defs>
+    <rect width="1600" height="900" fill="url(#g3)"/><rect width="1600" height="900" fill="url(#p3)"/>
+    <g class="drift" fill="none" stroke="#18d6c4" stroke-opacity=".6" stroke-width="1.5">
+      <rect x="1000" y="120" width="220" height="110"/><rect x="1300" y="260" width="220" height="110"/><rect x="960" y="400" width="220" height="110"/><rect x="1260" y="560" width="260" height="110"/>
+      <path d="M1220 175H1260V315H1300M1110 230V400M1180 455H1220V615H1260"/>
+    </g></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker">03 · Fabric</div>
+      <h2 id="t3">Your data, <em>wired</em> end to end</h2>
+      <p class="lede">See how Microsoft Fabric is laid out in your tenant, then build on it. The Fabric topology map shows what feeds what, and the Fabric builder helps plan and scaffold new workspaces and pipelines, so the estate grows on purpose instead of by accident.</p>
+      <span class="tag">Topology map</span><span class="tag">Fabric builder</span><span class="tag">Plan before you build</span>
+    </div>
+    <aside class="side">
+      <h3>What you get</h3>
+      <ul>
+        <li><b>A live map</b> of workspaces, capacities and the links between them.</li>
+        <li><b>A guided builder</b> that turns an intent into a reviewable plan.</li>
+        <li><b>Capacity and cost in view</b> beside the architecture, not in another tool.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 4 · CONTRACTS -->
+<section class="slide s4" id="contracts" aria-labelledby="t4">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <radialGradient id="g4" cx="80%" cy="70%" r="70%"><stop offset="0" stop-color="#f2c14e" stop-opacity=".5"/><stop offset="1" stop-color="#17120a" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1600" height="900" fill="url(#g4)"/>
+    <g class="drift" fill="none" stroke="#f2c14e" stroke-opacity=".45" stroke-width="1.3">
+      <rect x="1050" y="110" width="300" height="400"/><rect x="1120" y="160" width="300" height="400" stroke-opacity=".3"/><rect x="1190" y="210" width="300" height="400" stroke-opacity=".2"/>
+      <path d="M1090 190h180M1090 230h220M1090 270h160M1090 340h220M1090 380h120"/>
+      <path d="M1110 720h380" stroke-width="3"/><circle cx="1110" cy="720" r="10" fill="#f2c14e"/><circle cx="1300" cy="720" r="10" fill="#f2c14e"/><circle cx="1490" cy="720" r="10" fill="#f2c14e"/>
+    </g></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker">04 · Contracts &amp; renewals</div>
+      <h2 id="t4">Renew <em>on your terms</em></h2>
+      <p class="lede">Contract management built into the platform. See every renewal coming, compare what you pay with what people actually use, and walk into the negotiation with evidence. The system learns your operation, so each new contract is better than the last.</p>
+      <span class="tag">Renewal position</span><span class="tag">Contract analysis</span><span class="tag">Vendor leverage</span>
+    </div>
+    <aside class="side">
+      <h3>Built to negotiate</h3>
+      <ul>
+        <li><b>Renewals on one calendar</b>, with owners and lead times.</li>
+        <li><b>Spend against usage</b> shows where seats and licences go unused.</li>
+        <li><b>A contract agent</b> reads terms and flags what to push back on.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 5 · BUILDERS -->
+<section class="slide s5" id="builders" aria-labelledby="t5">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <linearGradient id="g5" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff7ab6" stop-opacity=".5"/><stop offset="1" stop-color="#17080f" stop-opacity="0"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#g5)"/>
+    <g class="drift" fill="none" stroke="#ffc2de" stroke-opacity=".45" stroke-width="1.3">
+      <rect x="1000" y="150" width="190" height="80" rx="40"/><rect x="1290" y="260" width="190" height="80" rx="12"/><rect x="1000" y="400" width="190" height="80" rx="12"/><rect x="1290" y="540" width="190" height="80" rx="40"/>
+      <path d="M1190 190C1250 190 1230 300 1290 300M1290 300C1230 300 1250 440 1190 440M1190 440C1250 440 1230 580 1290 580"/>
+      <path d="M700 760h800M700 800h520" stroke-opacity=".25"/>
+    </g></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker">05 · Flows, sites &amp; apps</div>
+      <h2 id="t5">Say it. <em>Ship it.</em></h2>
+      <p class="lede">End users describe what they want and the extended agents build it: automations, SharePoint sites designed to a standard worth showing off, and the applications around them. Broken flow? The repair agent finds the fault and proposes the fix.</p>
+      <span class="tag">Flow builder</span><span class="tag">Flow repair</span><span class="tag">SharePoint site builder</span>
+    </div>
+    <aside class="side">
+      <h3>For every end user</h3>
+      <ul>
+        <li><b>Build</b> flows and SharePoint sites from a plain-language brief.</li>
+        <li><b>Repair</b> the flows you already own, with a preview before anything changes.</li>
+        <li><b>Stay inside policy.</b> The same governance that guards the agents guards what they build.</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- 6 · START -->
+<section class="slide s6" id="start" aria-labelledby="t6">
+  <div class="art" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs>
+    <radialGradient id="g6" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#ff3d2e" stop-opacity=".4"/><stop offset="1" stop-color="#0b0b0d" stop-opacity="0"/></radialGradient></defs>
+    <rect width="1600" height="900" fill="url(#g6)"/></svg></div>
+  <div class="wrap">
+    <div>
+      <div class="kicker" style="justify-content:center">06 · Start</div>
+      <h2 id="t6">It gets <em>smarter</em> every day</h2>
+      <p class="lede">Platform Manager keeps what it learns from every sweep and every question. Look around the working demo, which uses synthetic data only.</p>
+      <a class="btn" href="index.html">Open the live demo</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll(".slide")),dots=[].slice.call(document.querySelectorAll(".dots a")),counter=document.getElementById("counter");
+  function mark(i){dots.forEach(function(d,k){d.classList.toggle("on",k===i)});counter.textContent=("0"+(i+1)).slice(-2)+" / "+("0"+slides.length).slice(-2)}
+  if(!("IntersectionObserver" in window)){slides.forEach(function(s){s.classList.add("in")});mark(0);return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");mark(slides.indexOf(e.target))}})},{threshold:.55});
+  slides.forEach(function(s){io.observe(s)});
+  function go(d){var y=window.scrollY,h=window.innerHeight,i=Math.round(y/h)+d;i=Math.max(0,Math.min(slides.length-1,i));slides[i].scrollIntoView()}
+  addEventListener("keydown",function(e){if(e.key==="ArrowDown"||e.key==="PageDown"||e.key===" "){e.preventDefault();go(1)}else if(e.key==="ArrowUp"||e.key==="PageUp"){e.preventDefault();go(-1)}});
+  mark(0);
+})();
+</script>
+</body>
+</html>
