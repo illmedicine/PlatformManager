@@ -62,7 +62,8 @@ button { font: inherit; }
   position: fixed; inset: 0 0 auto 0; height: var(--bar-h); z-index: 20; display: flex; align-items: center; gap: 12px;
   padding: 0 16px; background: var(--bar-bg); color: var(--ink-inv); box-shadow: var(--shadow-2);
 }
-.brand { display: flex; align-items: center; gap: 10px; font: 600 16px var(--font-display); letter-spacing: .1px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 600 16px var(--font-display); letter-spacing: .1px; color: inherit; text-decoration: none; }
+.brand:focus-visible { outline: 2px solid var(--brand-lime); outline-offset: 3px; border-radius: 4px; }
 .brand img { width: 28px; height: 28px; }
 .brand small { font-weight: 400; opacity: .75; font-size: 12px; margin-left: 4px; }
 .spacer { flex: 1; }

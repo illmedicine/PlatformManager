@@ -239,6 +239,14 @@ function toggleGroup(name) {
   buildNav(ctx.findings);
 }
 
+// The Platform Manager logo: a fresh start. My overview opens and every product menu is collapsed.
+document.getElementById("brand")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openGroups = [];
+  store.set("ppm-nav-products", openGroups);
+  if (location.hash === "#me") show(); else location.hash = "me";
+});
+
 function applyPin() {
   document.body.classList.toggle("nav-unpinned", !pinned);
   nav.classList.toggle("open", pinned || flyoutOpen);

@@ -1,4 +1,7 @@
 (function(){
+  // The logo leads back into the app: My overview, with every product menu collapsed for a fresh start.
+  var brand=document.getElementById("brand");
+  if(brand)brand.addEventListener("click",function(){try{localStorage.setItem("ppm-nav-products","[]")}catch(err){}});
   // Stripped-down topology diagrams. Each one has a few nodes, faint links and a handful of workflows.
   // On load one workflow is chosen at random and animated; nothing here can be selected by the visitor.
   var W=360,H=200;
