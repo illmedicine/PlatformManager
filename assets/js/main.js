@@ -52,8 +52,8 @@ const PAGES = [
   { top: true, id: "me", label: "My overview", icon: "users", render: mine.render },
   { hidden: true, id: "person", label: "Person", icon: "users", render: person.page },
   { hidden: true, id: "personuse", label: "Person activity", icon: "users", render: personuse.page },
-  { product: "Settings", id: "privacy", label: "Privacy & security", icon: "shield", render: privacy.render },
-  { id: "showcase", label: "Platform showcase", icon: "app", external: "assets/showcase.html" },
+  { hidden: true, id: "privacy", label: "Privacy & security", icon: "shield", render: privacy.render },
+  { product: "Settings", id: "showcase", label: "Platform showcase", icon: "app", external: "assets/showcase.html" },
 
   { product: "Microsoft 365", section: "Monitor", id: "m365activity", label: "App activity", icon: "chart", render: m365.render },
   { section: "People", id: "m365people", label: "Usage", icon: "users", render: peoplePage("m365", "Microsoft 365 usage by person", "Who has used Teams, Exchange, SharePoint, OneDrive, Copilot and the other Microsoft 365 apps, and when. Licensed people with no activity show as No activity.", "m365-usage") },
@@ -311,7 +311,8 @@ async function show() {
 
 // The last thing on every screen: where people read how sign-in works and what is recorded.
 function siteFoot() {
-  return h("footer", { class: "sitefoot" }, h("a", { href: "#privacy", text: "Privacy & security" }), h("span", { class: "muted", text: "How you sign in, what is recorded about you, and the controls around it" }));
+  // Shown at the foot of every page for every role: a single centred link, not a menu item.
+  return h("footer", { class: "sitefoot" }, h("a", { href: "#privacy", text: "Privacy & security" }));
 }
 
 function demoBanner() {
