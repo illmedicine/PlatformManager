@@ -1,6 +1,7 @@
 import { h, icon, fmt } from "../dom.js";
 import { api } from "../api.js";
 import { pageHead } from "./common.js";
+import { STORE_URL, FEATURED_NOTE, PARTNER_NOTE } from "../listing.js";
 
 // Updates, support and feature requests. Everything else in Platform Manager is free; these three are for paid subscribers.
 // The server decides (402 when the Microsoft Store does not show an active subscription); this page only shows the state.
@@ -64,6 +65,8 @@ export async function render() {
   if (paid) features.append(textForm("feature-requests", null, "The problem you want solved and who would use it."));
   else features.append(lockedNote("feature-requests", sub.storeUrl, "Feature requests are included in the subscription."));
 
+  root.append(h("div", { class: "banner info" }, icon("check"), h("span", {}, FEATURED_NOTE + " ",
+    h("a", { href: STORE_URL, target: "_blank", rel: "noopener", text: "View the Microsoft Store listing" }), " " + PARTNER_NOTE)));
   root.append(h("div", { class: "grid", style: { gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" } }, updates, support), h("div", { class: "section" }, features));
   return root;
 }
