@@ -112,3 +112,7 @@ h2 em,h1 em{font-style:normal;color:var(--blue)}
 .panel-start{margin-top:24px}
 .store-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:22px}
 .partner-note{margin:14px 0 0;font-size:15px;color:var(--ink)}
+
+/* Official Microsoft Store badge (public copies only; see scripts/pages/build.py) */
+.store-badge{display:inline-block;vertical-align:top;margin:22px 12px 0 0}
+.store-badge:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
